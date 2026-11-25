@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Exam result · Secure Exam{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><p class="eyebrow">ASSESSMENT RESULTS</p><h1>Your result</h1><p class="subtitle">{{ attempt.quiz.title }}</p></div>
+  <a class="button secondary" href="{% url 'dashboard' %}">Back to overview</a>
+</div>
+<section class="panel result-card">
+  <div class="result-symbol" aria-hidden="true">{% if attempt.status == 'in_progress' %}◷{% else %}✓{% endif %}</div>
+  <h2>{% if attempt.status == 'in_progress' %}Assessment in progress{% else %}Assessment complete{% endif %}</h2>
+  {% if attempt.status != 'in_progress' %}
+    <div class="result-score">{{ percentage|floatformat:1 }}%</div>
+    <p class="small">{{ display_score|floatformat:'-2' }} out of {{ total_marks }} marks</p>
+  {% else %}
+    <p class="small">Your final score will be available after submission.</p>
+  {% endif %}
+  <dl class="result-details">
+    <div><dt>Student</dt><dd>{{ attempt.student.username }}</dd></div>
+    <div><dt>Attempt status</dt><dd><span class="badge {{ attempt.status }}">{{ attempt.get_status_display }}</span></dd></div>
+  </dl>
+  <a class="button" href="{% url 'dashboard' %}">Return to workspace →</a>
+</section>
+{% if review %}
+<section class="panel"><h2>Teacher-released review</h2>{% for q in review %}<p>{{ q.prompt }} — Correct option: {{ q.correct_option }}</p>{% endfor %}</section>
+{% endif %}
+{% for revision in revisions %}<p>Score revision: {{ revision.previous }} → {{ revision.corrected }}. Reason: {{ revision.reason }}</p>{% endfor %}
+{% if request.user.role == 'admin' %}
+<section class="panel">
+  <form method="post" class="forms" action="{% url 'replacement_quiz' attempt.quiz_id %}">{% csrf_token %}<label>Reason for authorized replacement quiz<input name="reason" required maxlength="1000"></label><button>Authorize a new replacement quiz</button></form>
+  <form method="post" class="forms" action="{% url 'revise_score' attempt.pk %}">{% csrf_token %}<label>Corrected score<input name="score" type="number" min="0" max="{{ total_marks }}" step="0.01" required></label><label>Reason<input name="reason" required maxlength="1000"></label><button>Record score revision</button></form>
+</section>
+{% endif %}
+{% endblock %}

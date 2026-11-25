@@ -1,0 +1,80 @@
+# Environment and credentials
+.env
+.env.*
+!.env.example
+
+# Python environments and caches
+.venv/
+.venv-*/
+venv/
+env/
+virtualenv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Local databases, backups and exports
+db.sqlite3
+*.sqlite
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-shm
+*.sqlite3-wal
+*.db
+*.sql
+*.dump
+*.dmp
+database-dumps/
+*.bak
+*.backup
+*.enc
+backups/
+exports/
+media/
+*.csv
+*.xlsx
+
+# Certificates, keys and local Caddy state
+*.pem
+*.key
+*.crt
+*.cer
+*.pfx
+*.p12
+*.jks
+*.secret
+.caddy/
+caddy-data/
+caddy-config/
+pki/
+caddy.exe
+
+# Generated assets, logs and temporary output
+staticfiles/
+*.log
+*.tmp
+*.temp
+*.pid
+tmp/
+temp/
+docs/*-output.txt
+docs/deploy-check.txt
+docs/dependency-audit-status.txt
+
+# Local project reports that may contain deployment or personal details
+Secure_Exam_System_Project_Blueprint.pdf
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini

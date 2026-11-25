@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block content %}<h1>Students created</h1><p>Share each temporary password privately. It is shown only once.</p>{% for row in credentials %}<section class="panel"><strong>{{ row.username }}</strong><p>Temporary password: <code>{{ row.password }}</code></p></section>{% endfor %}{% endblock %}

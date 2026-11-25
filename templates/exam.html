@@ -1,0 +1,20 @@
+﻿{% extends 'base.html' %}
+{% block title %}{{ attempt.quiz.title }} · Secure Exam{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">ASSESSMENT IN PROGRESS</p><h1>{{ attempt.quiz.title }}</h1><p class="subtitle">Take your time, read carefully, and save each answer before submitting.</p></div><span class="badge {{ attempt.status }}">{{ attempt.get_status_display }}</span></div>
+<div class="exam-toolbar"><span><strong>{{ question_rows|length }} questions</strong> · {{ attempt.session.network_name }}</span><span>Deadline: <time datetime="{{ attempt.deadline_at|date:'c' }}">{{ attempt.deadline_at|date:'M j, Y · H:i' }} UTC</time></span></div>
+<p class="panel">Time remaining: <strong id="countdown" data-remaining="{{ remaining }}">{{ remaining }} seconds</strong></p>
+<div id="network-alert" class="message error" role="alert" hidden></div>
+<div id="exam-workspace" data-access-url="{% url 'exam_access' attempt.pk %}">
+<div class="exam-grid">
+{% for row in question_rows %}<form method="post" action="{% url 'save_answer' attempt.pk %}" class="answer-form" data-saved-option="{{ row.selected }}" data-version="{{ row.version }}">{% csrf_token %}
+<div class="question-card"><div class="question-topline"><span>QUESTION {{ forloop.counter }} OF {{ question_rows|length }}</span><span>{{ row.question.marks }} mark{{ row.question.marks|pluralize }}</span></div><h3 id="question-{{ row.question.pk }}">{{ row.question.prompt }}</h3>
+<div class="option-list" role="group" aria-labelledby="question-{{ row.question.pk }}">
+<label class="option"><input type="radio" name="selected_option" value="A" required {% if row.selected == 'A' %}checked{% endif %}><span><strong>A.</strong> {{ row.question.option_a }}</span></label>
+<label class="option"><input type="radio" name="selected_option" value="B" {% if row.selected == 'B' %}checked{% endif %}><span><strong>B.</strong> {{ row.question.option_b }}</span></label>
+<label class="option"><input type="radio" name="selected_option" value="C" {% if row.selected == 'C' %}checked{% endif %}><span><strong>C.</strong> {{ row.question.option_c }}</span></label>
+<label class="option"><input type="radio" name="selected_option" value="D" {% if row.selected == 'D' %}checked{% endif %}><span><strong>D.</strong> {{ row.question.option_d }}</span></label></div>
+<input type="hidden" name="version" value="{{ row.version }}"><input type="hidden" name="key" value="{{ row.key }}"><input type="hidden" name="question_id" value="{{ row.question.pk }}"><button type="submit" class="secondary">Save answer</button><span class="save-status" role="status">{% if row.selected %}Answer saved{% else %}No answer saved yet{% endif %}</span></div></form>{% empty %}<div class="empty-state">There are no questions in this assessment.</div>{% endfor %}</div>
+<form method="post" action="{% url 'submit_attempt' attempt.pk %}" class="exam-submit" id="exam-submit">{% csrf_token %}<div><p><strong>Ready to finish?</strong></p><p class="small">Save your answers first. Submission closes your attempt.</p></div><button type="submit">Submit exam →</button></form>
+</div>
+{% endblock %}

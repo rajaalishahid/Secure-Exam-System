@@ -1,0 +1,6 @@
+﻿{% extends 'base.html' %}
+{% block title %}{{ class_room.name }} · Secure Exam<p><a href="{% url 'import_students' class_room.pk %}">Import CSV roster</a></p>{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">CLASS DIRECTORY</p><h1>{{ class_room.name }}</h1><p class="subtitle">Your students, together in one place.</p></div>{% if request.user.role != 'student' %}<a class="button" href="{% url 'create_student' %}">＋ Add student</a>{% endif %}</div>
+<section class="panel form-panel"><div class="panel-header"><h3>Enrolled students</h3><span class="badge">{{ class_room.memberships.count }} students</span></div><ul class="student-list">{% for membership in class_room.memberships.all %}<li><span class="avatar" aria-hidden="true">{{ membership.student.username|slice:':1'|upper }}</span><div><p class="row-title">{{ membership.student.username }}</p><p class="row-meta">{{ membership.student.email|default:'No email provided' }}</p></div></li>{% empty %}<li class="small">No students yet. Add a student to start building your class.</li>{% endfor %}</ul></section>
+<p><a href="{% url 'import_students' class_room.pk %}">Import CSV roster</a></p>{% endblock %}

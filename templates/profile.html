@@ -1,0 +1,7 @@
+﻿{% extends 'base.html' %}
+{% block title %}My profile · Secure Exam{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">YOUR ACCOUNT</p><h1>My profile</h1><p class="subtitle">The account details for your learning workspace.</p></div></div>
+<section class="panel form-panel"><div class="profile-identity"><span class="avatar" aria-hidden="true">{{ user.username|slice:':1'|upper }}</span><div><h3>{{ user.username }}</h3><span class="badge published">{{ user.get_role_display }}</span></div></div><dl class="profile-details"><div><dt>Username</dt><dd>{{ user.username }}</dd></div><div><dt>Account role</dt><dd>{{ user.get_role_display }}</dd></div><div><dt>Email address</dt><dd>{{ user.email|default:'Not set' }}</dd></div></dl></section>
+<p><a class="button secondary" href="{% url 'change_password' %}">Change password</a></p>
+{% endblock %}

@@ -1,0 +1,16 @@
+Django==5.2.19
+mysqlclient==2.2.7
+psycopg==3.3.9
+psycopg-binary==3.3.9
+python-dotenv==1.2.2
+qrcode==8.2
+cryptography==50.0.0
+argon2-cffi==25.1.0
+argon2-cffi-bindings==26.2.0
+waitress==3.0.2
+asgiref==3.13.0
+sqlparse==0.6.1
+cffi==2.1.1
+pycparser==3.0
+typing-extensions==4.16.0
+pywebview==5.4

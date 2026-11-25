@@ -1,0 +1,45 @@
+{% extends 'base.html' %}{% block content %}
+<div class="page-header"><div><p class="eyebrow">NETWORK DIAGNOSTICS</p><h1>Exam Network Status</h1><p>Network mode: <strong>{{ mode }}</strong> &nbsp;|&nbsp; Server origin: <strong>{{ origin }}</strong></p></div><span class="badge {% if all_pass %}pass{% else %}fail{% endif %}">{{ all_pass|yesno:"All checks passed,Issues detected" }}</span></div>
+
+<div class="dashboard-grid">
+<section class="panel"><h2>Diagnostic Checks</h2>
+<table class="table">
+<thead><tr><th>Check</th><th>Status</th><th>Details</th></tr></thead>
+<tbody>
+{% for name, passed, detail in checks %}
+<tr>
+<td>{{ name }}</td>
+<td><span class="badge {% if passed %}pass{% else %}fail{% endif %}">{{ passed|yesno:"PASS,FAIL" }}</span></td>
+<td>{{ detail }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</section>
+
+<section class="panel"><h2>Student Access URL</h2>
+<p>Students should open this URL on their phone or scan the QR code from the session page:</p>
+<div style="font-family: monospace; background: #f5f5f5; padding: 1rem; border-radius: 4px; word-break: break-all;">{{ origin }}</div>
+<p class="small">QR codes generated from session pages will use this origin. If this shows localhost or 127.0.0.1, students on other devices cannot connect.</p>
+</section>
+
+<section class="panel"><h2>Troubleshooting</h2>
+<ul>
+<li><strong>ERR_CONNECTION_REFUSED</strong>: The configured application listener is stopped, or the approved interface/firewall path is blocking access.</li>
+<li><strong>Site can't be reached</strong>: The phone cannot reach the laptop's IP. Verify both devices are on the same Wi-Fi/hotspot.</li>
+<li><strong>Hostel Wi-Fi isolation</strong>: Some hostel networks block device-to-device communication. Use Laptop Hotspot Mode instead.</li>
+<li><strong>QR shows localhost or an unexpected address</strong>: Stop the service and restart it with Start-Hotspot.cmd so the advertised origin matches the hotspot interface.</li>
+</ul>
+</section>
+
+{% if not all_pass %}
+<section class="panel"><h2>Recommended Actions</h2>
+<ul>
+<li>Run Start-Hotspot.cmd as Administrator for the supported HTTPS network deployment.</li>
+<li>Keep students on the laptop hotspot and verify the two-device check in docs/HOTSPOT.md.</li>
+<li>Do not expose Django runserver or the private application listener to student devices.</li>
+<li>Restart the service after changing the hotspot address or subnet.</li>
+</ul>
+</section>
+{% endif %}
+{% endblock %}

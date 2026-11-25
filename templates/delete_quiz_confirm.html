@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Permanently Delete Quiz? · Secure Exam{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <p class="eyebrow danger-text">DESTRUCTIVE ACTION</p>
+    <h1>Permanently Delete Quiz?</h1>
+    <p class="subtitle">Deleting this quiz will permanently remove its questions, exam sessions, student attempts, answers and results. This action cannot be undone.</p>
+  </div>
+</div>
+<section class="panel deletion-panel">
+  <h2>{{ quiz.title }}</h2>
+  <dl class="deletion-summary">
+    <div><dt>Total questions</dt><dd>{{ total_questions }}</dd></div>
+    <div><dt>Total enrolled students</dt><dd>{{ total_enrolled_students }}</dd></div>
+    <div><dt>Total attempts</dt><dd>{{ total_attempts }}</dd></div>
+    <div><dt>Total submitted results</dt><dd>{{ total_submitted_results }}</dd></div>
+  </dl>
+  {% if error %}<p class="deletion-error" role="alert">{{ error }}</p>{% endif %}
+  {% if has_open_session %}
+    <p class="deletion-error" role="alert">This quiz has an open exam session. Close the exam first, then return here to delete it.</p>
+    <div class="form-footer"><a class="button secondary" href="{% url 'dashboard' %}">Cancel</a></div>
+  {% else %}
+    <form class="forms" method="post" action="{% url 'delete_quiz' quiz.pk %}">
+      {% csrf_token %}
+      <input type="hidden" name="confirmation" value="permanently-delete">
+      <label for="deletion-reason">Reason for deletion
+        <textarea id="deletion-reason" name="reason" required maxlength="500" placeholder="Briefly explain why this quiz is being deleted."></textarea>
+      </label>
+      <p class="small">The reason and quiz identifier will be retained in the security audit trail. Question and answer content will not be retained there.</p>
+      <div class="form-footer">
+        <a class="button secondary" href="{% url 'dashboard' %}">Cancel</a>
+        <button class="danger solid" type="submit">Permanently Delete Quiz</button>
+      </div>
+    </form>
+  {% endif %}
+</section>
+{% endblock %}

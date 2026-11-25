@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#142c35"><title>Secure Exam System</title>
+<link rel="stylesheet" href="{% static 'css/styles.css' %}"><script src="{% static 'js/interface.js' %}" defer></script>
+{% block extra_head %}{% endblock %}
+</head>
+<body class="{% if request.user.is_authenticated and not login_page %}app-layout{% else %}auth-layout{% endif %}">
+<a class="skip-link" href="#main-content">Skip to content</a>
+{% if request.user.is_authenticated and not login_page %}
+<aside class="sidebar">
+<a class="brand" href="{% url 'dashboard' %}"><span class="brand-mark" aria-hidden="true">S</span><span>Secure Exam<span class="brand-caption">LEARNING WORKSPACE</span></span></a>
+<p class="nav-label">WORKSPACE</p>
+<nav class="nav" aria-label="Main navigation">
+<a href="{% url 'dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active" aria-current="page"{% endif %}><span aria-hidden="true">▦</span> Overview</a>
+{% if request.user.role == 'student' %}<a href="{% url 'scan_exam' %}" {% if request.resolver_match.url_name == 'scan_exam' %}class="active" aria-current="page"{% endif %}><span aria-hidden="true">▣</span> Scan exam QR</a>{% endif %}
+{% if request.user.role == 'teacher' %}
+
+<a href="{% url 'create_quiz' %}" {% if request.resolver_match.url_name == 'create_quiz' %}class="active" aria-current="page"{% endif %}><span aria-hidden="true">✎</span> Create quiz</a>
+{% endif %}
+{% if request.user.role == 'admin' %}
+<a href="{% url 'create_teacher' %}" {% if request.resolver_match.url_name == 'create_teacher' %}class="active" aria-current="page"{% endif %}><span aria-hidden="true">＋</span> Add teacher</a>
+<a href="{% url 'activation_invitations' %}">Activation links</a>
+{% endif %}
+{% if request.user.role == 'teacher' %}
+<a href="{% url 'create_student' %}" {% if request.resolver_match.url_name == 'create_student' %}class="active" aria-current="page"{% endif %}><span aria-hidden="true">＋</span> Add student</a>
+<a href="{% url 'activation_invitations' %}">Activation links</a>
+{% endif %}
+{% if request.user.role == 'admin' %}
+<a href="{% url 'audit_log' %}" {% if request.resolver_match.url_name == 'audit_log' %}class="active" aria-current="page"{% endif %}><span aria-hidden="true">◷</span> Audit log</a>
+{% endif %}
+<a href="{% url 'profile' %}" {% if request.resolver_match.url_name == 'profile' %}class="active" aria-current="page"{% endif %}><span aria-hidden="true">◎</span> My profile</a>
+{% if request.user.role == 'admin' %}<a href="{% url 'manage_users' %}">Manage accounts</a><a href="{% url 'network_profiles' %}">Network profiles</a><a href="{% url 'assign_class' %}">Assign classes</a>{% endif %}
+</nav>
+<div class="sidebar-bottom"><div class="workspace-note"><span class="status-dot"></span> Your learning, organized<p>Classes, assessments, and results in one place.</p></div><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="signout" type="submit">Sign out <span aria-hidden="true">↗</span></button></form></div>
+</aside>
+{% endif %}
+<div class="page-shell">
+<header class="topbar">
+{% if request.user.is_authenticated and not login_page %}
+<div class="breadcrumb">Workspace <span>/</span> {{ request.user.get_role_display }}</div>
+<a class="user-menu" href="{% url 'profile' %}"><span class="avatar">{{ request.user.username|slice:':1'|upper }}</span><span>{{ request.user.username }}<small>{{ request.user.get_role_display }}</small></span></a>
+{% else %}
+<a class="brand" href="{% url 'login' %}"><span class="brand-mark" aria-hidden="true">S</span><span>Secure Exam System</span></a><span class="small">Your assessment workspace</span>
+{% endif %}
+</header>
+{% if messages %}<div class="messages" role="status">{% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+<main class="content" id="main-content" tabindex="-1">{% block content %}{% endblock %}</main>
+<footer class="page-footer">Secure Exam System <span>Learn with purpose. Assess with confidence.</span></footer>
+</div>
+</body></html>

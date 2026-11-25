@@ -1,0 +1,20 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% block extra_head %}<script src="{% static 'js/quiz-builder.js' %}" defer></script>{% endblock %}
+{% block title %}Create quiz · Secure Exam{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">ASSESSMENT BUILDER</p><h1>{% if quiz %}Manage quiz{% else %}Create a quiz{% endif %}</h1><p class="subtitle">Choose your class and set how many questions your quiz needs.</p></div><div class="row-actions"><a class="button secondary" href="{% url 'dashboard' %}">Back to overview</a>{% if quiz %}<a class="button danger" href="{% url 'confirm_delete_quiz' quiz.pk %}">Delete Quiz</a>{% endif %}</div></div>
+<section class="panel form-panel"><form method="post" class="forms">{% csrf_token %}{{ form.non_field_errors }}
+<div><label for="{{ form.title.id_for_label }}">Quiz title</label>{{ form.title }}{{ form.title.errors }}</div>
+<div><label for="{{ form.description.id_for_label }}">Description <span class="small">(optional)</span></label>{{ form.description }}{{ form.description.errors }}</div>
+<div><label for="{{ form.class_id.id_for_label }}">Class</label>{{ form.class_id }}{{ form.class_id.errors }}</div>
+
+<div><label for="{{ form.question_count.id_for_label }}">Number of questions</label>{{ form.question_count }}{{ form.question_count.errors }}<button type="button" class="button secondary" id="apply-question-count">Update questions</button><p class="small" id="question-count-status" aria-live="polite">Choose 1 to 100 questions. Update questions before filling in your quiz.</p></div>
+<div id="quiz-questions">
+{% for row in question_fields %}<fieldset data-quiz-question><legend>Question {{ forloop.counter }}</legend><div class="question-fields">
+<div><label for="{{ row.prompt.id_for_label }}">Question</label>{{ row.prompt }}{{ row.prompt.errors }}</div>
+<div class="form-grid">{% for letter, field in row.options %}<div><label for="{{ field.id_for_label }}">Option {{ letter }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}</div>
+<div class="form-grid"><div><label for="{{ row.correct.id_for_label }}">Correct answer</label>{{ row.correct }}{{ row.correct.errors }}</div><div><label for="{{ row.marks.id_for_label }}">Marks</label>{{ row.marks }}{{ row.marks.errors }}</div></div></div></fieldset>{% endfor %}</div>
+<p class="small">Your quiz will be saved as a draft. Publish it from your overview when you're ready.</p><div class="form-footer"><button type="submit">{% if quiz %}Save quiz{% else %}Create quiz{% endif %}</button><a href="{% url 'dashboard' %}">Cancel</a></div>
+</form></section>
+{% endblock %}

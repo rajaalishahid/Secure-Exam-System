@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Manage accounts · Secure Exam{% endblock %}
+{% block content %}
+<h1>Manage accounts</h1>
+<p>Manage account status and record the reason for each administrative action.</p>
+{% for account in users %}
+<section class="panel">
+  <h2>{{ account.username }} · {{ account.get_role_display }}</h2>
+  <p>Status: {{ account.get_status_display }}</p>
+  <form method="post" class="forms">
+    {% csrf_token %}
+    <input type="hidden" name="user_id" value="{{ account.pk }}">
+    <label>Reason / admin record<input name="reason" required maxlength="500"></label>
+    <label>New password (for password actions)<input name="new_password" type="password" autocomplete="new-password"></label>
+    <label>Action
+      <select name="action">
+        <option value="suspend">Suspend</option>
+        <option value="activate">Reactivate</option>
+        <option value="reissue">Reissue activation</option>
+        <option value="reset_password">Reset password</option>
+        <option value="change_password">Change password</option>
+      </select>
+    </label>
+    <button type="submit">Apply</button>
+  </form>
+</section>
+{% empty %}
+<p class="empty-state">No accounts found.</p>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Activation invitations · Secure Exam System{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">SECURE ACCOUNT DELIVERY</p><h1>Activation invitations</h1><p>Reissue a private 30-minute link for an account that has not yet been activated. Links appear only in the response to this authorized action.</p></div></div>
+{% for account in users %}
+<section class="panel">
+  <h2>{{ account.get_full_name|default:account.username }} · {{ account.get_role_display }}</h2>
+  <p>Username: {{ account.username }} · Status: {{ account.get_status_display }}</p>
+  <form method="post" class="forms">
+    {% csrf_token %}<input type="hidden" name="user_id" value="{{ account.pk }}">
+    <label>Reason for reissue<input name="reason" maxlength="500" required></label>
+    <button type="submit">Issue private activation link</button>
+  </form>
+</section>
+{% empty %}<p class="empty-state">No pending activation accounts are assigned to you.</p>{% endfor %}
+{% endblock %}

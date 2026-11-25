@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Activate account · Secure Exam System{% endblock %}
+{% block content %}
+<div class="login-layout">
+  <section class="login-story">
+    <p class="eyebrow">SECURE EXAM SYSTEM</p>
+    <h1>Welcome.<br><span>Set up your account.</span></h1>
+    <p>Choose a strong password to finish activating your account.</p>
+  </section>
+  <section class="login-wrap" aria-labelledby="activation-heading">
+    <p class="eyebrow">FIRST-TIME ACTIVATION</p>
+    <h2 id="activation-heading">Activate your account</h2>
+    {% if invalid_invitation %}
+      <p class="message error" role="alert">This invitation is invalid, expired, revoked, or already used. Ask your teacher or administrator for a new private invitation.</p>
+    {% else %}
+      <p class="subtitle">Choose a password for your Secure Exam System account.</p>
+      <form method="post" class="forms" autocomplete="off">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div><label for="id_password">New password</label>{{ form.password }}{{ form.password.errors }}<p class="field-help">Use at least 12 characters. Django will check password strength.</p></div>
+        <div><label for="id_confirm">Confirm password</label>{{ form.confirm }}{{ form.confirm.errors }}</div>
+        <button type="submit">Activate account <span aria-hidden="true">→</span></button>
+      </form>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

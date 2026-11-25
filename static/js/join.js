@@ -1,0 +1,1 @@
+(() => { if(location.hash.length>1){const token=location.hash.slice(1);history.replaceState(null,'',location.pathname);document.getElementById('join-code').value=token;document.getElementById('join-form').requestSubmit();} })();
